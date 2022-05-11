@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Hacettepe Navigasyon</title>
+    <link rel = "icon" href = 
+        "https://upload.wikimedia.org/wikipedia/tr/thumb/2/28/Hacettepe_%C3%9Cniversitesi_Logosu.svg/1200px-Hacettepe_%C3%9Cniversitesi_Logosu.svg.png" 
+        type = "image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css">
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <script src="https://openlayers.org/en/v4.6.5/build/ol.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            $(".btn").click(function () {
+                $.ajax({
+                    url: "",
+                    type: "get",
+                    data: {
+                        button_text: $(this).text()
+                    },
+                    success: function (response) {
+                        $(".btn").text(response.seconds)
+                        // $("#seconds").append('<li>' + response.seconds + '</li>')
+                    }
+                });
+            });
+
+        });
+    </script>
+    
+    <style>
+        body {
+          font-family: "Lato", sans-serif;
+        }
+        
+        .sidenav {
+          height: 100%;
+          width: 0;
+          position: fixed;
+          z-index: 1;
+          top: 0;
+          left: 0;
+          background-color: rgba(219, 5, 5, 0.801);
+          overflow-x: hidden;
+          transition: 0.5s;
+          padding-top: 60px;
+        }
+        
+        .sidenav a {
+          padding: 8px 8px 8px 32px;
+          text-decoration: none;
+          font-size: 25px;
+          color: #000000;
+          display: block;
+          transition: 0.3s;
+        }
+        
+        .sidenav a:hover {
+          color: #f1f1f1;
+        }
+        
+        .sidenav .closebtn {
+          position: absolute;
+          top: 0;
+          right: 25px;
+          font-size: 36px;
+          margin-left: 50px;
+        }
+        
+        @media screen and (max-height: 450px) {
+          .sidenav {padding-top: 15px;}
+          .sidenav a {font-size: 18px;}
+        }
+        </style>
+
+    <style>
+        .dropbtn {
+            background-color: #04AA6D;
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+            .dropbtn:hover, .dropbtn:focus {
+                background-color: #3e8e41;
+            }
+
+        .myInput {
+            border-color: aqua;
+            box-sizing: border-box;
+            background-image: url('searchicon.png');
+            background-position: 14px 12px;
+            background-repeat: no-repeat;
+            font-size: 16px;
+            padding: 14px 20px 12px 45px;
+            border: none;
+            border-bottom: 1px solid #ddd;
+        }
+
+            #myInput:focus {
+                outline: 3px solid #ddd;
+            }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f6f6f6;
+            min-width: 230px;
+            overflow: auto;
+            border: 1px solid #ddd;
+            z-index: 1;
+        }
+
+            .dropdown-content a {
+                color: black;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+            }
+
+        .dropdown a:hover {
+            background-color: #ddd;
+        }
+
+        .show {
+            display: block;
+        }
+
+
+    </style>
+
+<style>
+    html,body {
+   height: 100%;
+   padding: 0;
+   margin: 0;
+   font-family: arial;
+   font-weight: bold;
+  
+ }
+   #map{
+        position: absolute;
+        width: 100%;
+        height: 100%;			
+       }
+       
+       .ol-mouse-position{
+      top:97%;
+      right:20%;
+      position:absolute;
+      font-weight: bold;
+      }
+      .layer-switcher.shown {
+       max-height: 465px;
+      }
+      
+      #legend{
+         z-index: 11;
+         padding: 4px 8px;
+         border: 2px solid grey;
+         position: absolute;
+         bottom: 0px;
+         height: 8%;
+         /* overflow: scroll; */
+         width:15%; 
+         right: 0%;
+         background-color: rgba(255, 248, 220, 0.9);
+         font-weight: bold;
+       }
+       #legend2{
+         z-index: 11;
+         padding: 4px 8px;
+         border: 2px solid grey;
+         position: absolute;
+         top: 0px;
+         height: 20%;
+         /* overflow: scroll; */
+         width:15%; 
+         left: 0%;
+         background-color: rgba(100, 91, 80, 0.979);
+         font-weight: bold;
+       }
+ 
+       
+      </style>
+
+
+<a href="http://hacettepe.edu.tr/"><img id="logo" style="position: fixed; z-index: 3" src="https://upload.wikimedia.org/wikipedia/tr/thumb/2/28/Hacettepe_%C3%9Cniversitesi_Logosu.svg/1200px-Hacettepe_%C3%9Cniversitesi_Logosu.svg.png"></a>
+    <style>
+    #logo {
+    display: inline-block;
+    margin: 20 px; /* margin: 20px was off */
+    float: left;
+    height: 100px;
+    width: auto; /* correct proportions to specified height */
+
+    }
+    </style>
+
+<style type="text/css">
+            
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    
+    body {
+        font-family: Open Sans, Arial, sans-serif;
+        overflow-x: hidden;
+    }
+    
+    nav {
+        position: relative;
+        z-index: 1000;
+        top: 0;
+        bottom: 0;
+        width: 200px;
+        background-color: #036;
+        transform: translate3d(-200px, 0, 0);
+        transition: transform 0.4s ease;
+    }
+    .active-nav nav {
+        transform: translate3d(0, 0, 0);
+    }
+    nav ul {
+        list-style: none;
+        margin-top: 100px;
+    }
+    nav ul li a {
+        text-decoration: none;
+        display: block;
+        text-align: center;
+        color: #fff;
+        padding: 10px 0;
+    }
+    
+    .nav-toggle-btn {
+        display: block;
+        position: absolute;
+        left: 200px;
+        width: 40px;
+        height: 40px;
+        background-color: #666;
+    }
+    
+    .content {
+        padding-top: 300px;
+        height: 2000px;
+        background-color: #ccf;
+        text-align: center;
+        transition: transform 0.4s ease;
+    }
+    .active-nav .content {
+        transform: translate3d(200px, 0, 0);
+    }
+    
+    
+    
+</style>
+
+<style>
+    .myInput {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+    </style>
+    
+    
+
+</head> 
+<body style="background-color:rgba(100, 91, 80, 0.979);">
+
+
+    <div id="mySidenav" class="sidenav" style="z-index: 3">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+
+        <!-- <div>
+            <style>
+            .map {
+                position: relative;
+                width: 100%;
+                height: 100%;
+              }
+              
+              #before {
+                top: 0;
+              }
+              
+              #after {
+                top: 50%; 
+                padding-top:5px; 
+              }
+            </style>
+        </div> -->
+
+        
+        
+
+    <p>
+        <form action="showResult" method="get">
+
+            <!-- <div style="position:relative;width:200px;height:25px;border:0;padding:0;margin:0;">
+                <select style="position:absolute;top:0px;left:0px;width:200px; height:25px;line-height:20px;margin:0;padding:0;"
+                        onchange="document.getElementById('displayValue').value=this.options[this.selectedIndex].text; document.getElementById('idValue').value=this.options[this.selectedIndex].value;">
+                  <option></option>
+                  <option value="one">alex</option>
+                  <option value="two">de</option>
+                  <option value="three">three</option>
+                </select>
+                <input type="text" name="displayValue" id="displayValue" 
+                       placeholder="add/select a value" onfocus="this.select()"
+                       style="position:absolute;top:0px;left:0px;width:183px;width:180px\9;#width:180px;height:23px; height:21px\9;#height:18px;border:1px solid #556;"  >
+                <input name="idValue" id="idValue" type="hidden">
+              </div> -->
+
+        <!-- <label style=" color: #ffebef; margin-left: 10px;">Başlangıç noktasını seçiniz
+            <input id="inpbrowsers" list="browsers" style="border-color: rgba(1, 15, 13, 0.842); color: rgb(0, 0, 0);" name="baslangic" /></label>
+            <datalist id="browsers" >
+              <option value="Geomatik Mühendisliği">
+              <option value="Elektrik Elektronik Mühendisliği">
+              <option value="İİBF">
+              <option value="Camlı yemekhane">
+              <option value="Beytepe Gün Hastanesi">
+              <option value="Yabancı Diller Yüksekokulu">
+              <option id="603" value="Geomatics Engineering"></option>
+              <option value="87">Library</option>
+              <option value="276"></option>
+              <option value="649"></option>
+            </datalist> -->
+
+            <form action="/create" method="post" >
+                <label style=" color: #ffebef; margin-left: 10px;">Başlangıç noktasını seçiniz
+                <input id="inpbrowsers" list="browsers" style="border-color: rgba(1, 15, 13, 0.842); color: rgb(0, 0, 0);" /></label>
+                 <datalist id="browsers" >
+                              <option data-value="236">Nizamye B Kapısı</option>
+                              <option data-value="605">Nizamiye A Kapısı</option>
+                              <option data-value="276">Geomatik Mühendisliği</option>
+                              <option data-value="1707">Konservatuvar</option>
+                              <option data-value="1128">Beyaz Ev</option>
+                              <option data-value="1705">Emine Şerif Hanım Kyk Yurdu</option>
+                              <option data-value="1707">Tunçalp Özgen Kültür Kongre Salonu</option>
+                              <option data-value="1703">Amfi Tiyatro</option>
+                              <option data-value="1529">Stadyum</option>
+                              <option data-value="1661">Spor Salonu</option>
+                              <option data-value="1643">Tenis Kortu 1</option>
+                              <option data-value="1663">Tenis Kortu 2</option>
+                              <option data-value="1637">Spor Bilimleri Fakültesi</option>
+                              <option data-value="1663">Parlar Kız Öğrenci Yurdu</option>
+                              <option data-value="1661">Çatı Büfe</option>
+                              <option data-value="1633">Nüfus Enstitüsü</option>
+                              <option data-value="1631">Bisiklet teslim yeri</option>
+                              <option data-value="1649">Beytepe Kız Öğrenci Yurdu</option>
+                              <option data-value="1667">Beytepe Erkek Öğrenci Yurdu</option>
+                              <option data-value="1667">Yurdum kafe</option>
+                              <option data-value="1617">Beytepe öğrenci evi B blok</option>
+                              <option data-value="1619">Beytepe öğrenci evi C blok</option>
+                              <option data-value="1621">Beytepe öğrenci evi D blok</option>
+                              <option data-value="1623">Beytepe öğrenci evi E blok</option>
+                              <option data-value="1579">Beytepe öğrenci evi J blok</option>
+                              <option data-value="1575">Beytepe öğrenci evi N blok</option>
+                              <option data-value="1577">Beytepe öğrenci evi L blok</option>
+                              <option data-value="1587">Beyepe Alışveriş Merkezi (BAM)</option>
+                              <option data-value="1581">Atatepe Öğrenci Yurdu</option>
+                              <option data-value="1539">Beytepe Gün Hastanesi</option>
+                              <option data-value="1585">Şok Market</option>
+                              <option data-value="1501">Kütüphane</option>
+                              <option data-value="1511">Ana Yemekhane</option>
+                              <option data-value="1501">Coffeebreak</option>
+                              <option data-value="1505">City A girişi</option>
+                              <option data-value="1507">City B girişi</option>
+                              <option data-value="1509">City C girişi</option>
+                              <option data-value="506">Nükleer Enerji Mühendisliği/Fizik Mühendisliği</option>
+                              <option data-value="1499">Elektrik Elektronik Mühendisliği</option>
+                              <option data-value="539">Yıldız Amfi</option>
+                              <option data-value="1521">Biyoloji Bölümü</option>
+                              <option data-value="1421">Bilgisayar Mühendisliği/Yapay Zeka Mühendisliği</option>
+                              <option data-value="1425">Jeoloji Mühendisliği</option>
+                              <option data-value="1459">Yerbilimleri binası</option>
+                              <option data-value="458">MAE A girişi</option>
+                              <option data-value="349">MAE B girişi</option>
+                              <option data-value="148">Gıda Mühendisliği</option>
+                              <option data-value="1701">Mühendislik Fakültesi Dekanlığı</option>
+                              <option data-value="1681">Makine Mühendisliği/İnşaat Mühendisliği</option>
+                              <option data-value="1189">Makine Lab</option>
+                              <option data-value="1567">Hukuk Fakültesi A girişi</option>
+                              <option data-value="1565">Hukuk Fakültesi B girişi</option>
+                              <option data-value="273">Camlı Yemekhane</option>
+                              <option data-value="261">Piramit Kafe</option>
+                              <option data-value="359">Gazze Camisi</option>
+                              <option data-value="407">Öğrenci İşleri</option>
+                              <option data-value="486">Atatürk Anıtı</option>
+                              <option data-value="1693">Güzel Sanatlar Fakültesi</option>
+                              <option data-value="1695">Güzel Sanatlar Enstitüsü ve Heykel Bölümü</option>
+                              <option data-value="293">Yabancı Diller Yüksekokulu A girişi</option>
+                              <option data-value="1691">Yabancı Diller Yüksekokulu B girişi</option>
+                              <option data-value="613">İktisadi ve İdari Bilimler Fakültesi</option>
+                              <option data-value="1377">İktisadi ve İdari Bilimler Fakültesi Toplantı salonu girişi</option>
+                              <option data-value="781">Eğitim Fakültesi B Blok</option>
+                              <option data-value="1475">Edebiyat Fakültesi A Kapısı</option>
+                              <option data-value="1451">Edebiyat Fakültesi B Kapısı</option>
+                              <option data-value="792">Edebiyat Fakültesi C Kapısı</option>
+                              <option data-value="1487">Edebiyat Fakültesi D Kapısı</option>
+                              <option data-value="733">Nacho</option>
+                              <option data-value="665">Maden Mühendisliği</option>
+                              <option data-value="1459">Çevre Mühendisliği</option>
+                              <option data-value="1391">Aktüerya Bilimleri</option>
+                              <option data-value="1405">İstatistik Bölümü</option>
+                              <option data-value="1399">Matematik Bölümü A girişi</option>
+                              <option data-value="1389">Matematik Bölümü B girişi</option>
+                              <option data-value="1395">Kimya Bölümü</option>
+                              <option data-value="1497">Kimya Mühendisliği</option>
+                              <option data-value="1689">Eğitim Fakültesi A Blok</option>
+                              <option data-value="1573">Beytepe öğrenci evi K blok</option>
+                              <option data-value="1627">Beytepe öğrenci evi G blok</option>
+                              <option data-value="1625">Beytepe öğrenci evi F blok</option>
+
+
+
+
+
+
+                      </datalist>
+                      
+                      <input type="hidden" id="baslangic"  name="baslangic">
+
+                <label style=" color: #ffebef; margin-left: 10px;">Varış noktasını seçiniz
+                <input id="inpbrowsers2" list="browsers" name="bitis" style="border-color: rgba(1, 15, 13, 0.842);  color: rgb(0, 0, 0);" /></label>
+                      
+                <input type="hidden" id="bitis"  name="bitis">
+
+                <li class="radio" > 
+                    <p>
+                        <label class="radio-inline" style="color: #ffebef; margin-left: 10px; font-weight: bold;">
+                        <input type="radio" name="user_type" value="Yaya" >Yaya</label >
+                    </p>
+                    <p>
+                        <label class="radio-inline" style="color: #ffebef; margin-left: 10px; font-weight: bold;">
+                        <input type="radio" name="user_type" value="Araba" >Araba</label>
+                    </p>
+                    <p>
+                        <label class="radio-inline" style="color: #ffebef; margin-left: 10px; font-weight: bold;">
+                        <input type="radio" name="user_type" value="Engelli" >Engelli</label>
+                    </p>
+                    <p>
+                        <label class="radio-inline" style="color: #ffebef; margin-left: 10px; font-weight: bold;"> 
+                        <input type="radio" name="user_type" value="Bisikletli" >Bisikletli</label>
+                    </p>
+                    
+                </li>
+
+                <button type="submit" style="margin-left: 65px">Rota Ayarla</button>
+      
+          </form>
+      
+          <script>
+           
+                  // fire on user selection
+                  $("#inpbrowsers").change(function(e){
+      
+                      var value = e.target.value;
+                      var item = querySelectorIncludesText("#browsers option",value);
+                      // if find item
+                      if(item)
+                      {
+                          $("#baslangic").val($(item).data("value"));
+      
+                      }
+                      else
+                      {
+                          $("#baslangic").val('');
+                      }
+                  });
+
+                  $("#inpbrowsers2").change(function(e){
+      
+                        var value = e.target.value;
+                        var item = querySelectorIncludesText("#browsers option",value);
+                        // if find item
+                        if(item)
+                        {
+                            $("#bitis").val($(item).data("value"));
+
+                        }
+                        else
+                        {
+                            $("#bitis").val('');
+                        }
+                    });
+                  
+                  // helper function
+                  function querySelectorIncludesText (selector, text){    
+                      return Array.from(document.querySelectorAll(selector))
+                          .find(el => el.textContent.includes(text));
+                      }
+          </script>
+
+            
+
+
+
+        
+
+
+            
+
+    <p>
+
+    </p>
+
+    <p>
+        <a href="https://hacettepesemtservisleri.herokuapp.com/" class="button" style="margin-top: 20px; margin-left: -20px; color: #ffebef;">Semt Servisleri</a>
+    </p>
+    
+    <p></p>
+
+    </form>
+    <p style="margin-top: 480px; margin-left: 95px;"><button type="button" onclick="alertAlex()">Bilgi</button></p>
+    </p>
+      </div>
+    
+      <!-- <div id = "map" class = "openNav" tabindex= "0" style="position:relative;"> -->
+      
+      
+        <h2 style="margin-left: 80px; color: cornsilk; position: fixed; z-index: 2">HACETTEPE ÜNİVERSİTESİ</h2>
+        
+        <!-- <div>
+            <span class = "page_title">Interactive Map</span>
+            <a href = "//harita.hacettepe.edu.tr" class = "lang-switcher">Türkçe</a>
+    
+        </div> -->
+      
+      <span style="font-size:30px;cursor:pointer ; color: cornsilk; position: fixed; z-index: 2; margin-left: 81px; margin-top: 50px;" onclick="openNav()">&#9776; Menu</span>
+      
+
+    
+      <script>
+      function openNav() {
+        document.getElementById("mySidenav").style.width = "225px";
+      }
+      
+
+
+      function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+      }
+      </script>
+
+
+    <p>                            </p>
+
+    
+
+    <div id="map" class="map" style="position: fixed; z-index: 1">
+        <div id="legend">
+            <p><svg width="10" height="10">
+                <rect width="300" height="100" style="fill:rgb(255, 0, 0);stroke-width:3;stroke:rgb(0,0,0)" />
+              </svg>
+            Araba Yolu
+        </p>
+
+        <p>
+            <svg width="10" height="10">
+                <rect width="300" height="100" style="fill:#b5e40a;stroke-width:3;stroke:rgb(0,0,0)" />
+              </svg>
+            Yaya / Bisikletli / Engelli
+        </p>
+            
+        </div>
+
+    </div>
+      
+
+    <div id="111" style = 'display: none;'>
+        {{name}}
+    </div>
+
+    <div id="112" style = 'display: none;'>
+        {{name2}}
+    </div>
+
+    <script>
+
+
+        var raster = new ol.layer.Tile({source: new ol.source.XYZ({
+        url: 'http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}&s=Ga'
+      })});
+
+
+
+        
+        // var wkt2 = "MULTILINESTRING ((3643840.337043635 4846760.117782967, 3643847.925076205 4846760.766878214), (3643841.756831143 4846706.067459416, 3643841.470354245 4846722.038546463, 3643840.337043635 4846760.117782967), (3643843.13687263 4846632.188600393, 3643842.945719264 4846639.786946652, 3643841.756831143 4846706.067459416))";
+
+        var wkt2 = document.getElementById('112').innerHTML;
+
+        var wkt = document.getElementById('111').innerHTML;
+
+        var wktController = wkt
+        console.log(wktController)
+
+        if (wktController = 'GEOMETRYCOLLECTION EMPTY') {
+            console.log("aaaa"); // alert("**Geçerli rota bulunamadı. Lütfen farklı bir seçenek deneyiniz. (Başlangıç noktanız araç kullanımı dışındadır)")
+            };
+
+
+ 
+        var format = new ol.format.WKT();
+
+        var feature = format.readFeature(wkt, {dataProjection: 'EPSG:3857', featureProjection: 'EPSG:3857'});
+
+        feature.setStyle(
+            new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: 'rgba(255, 255, 255, 0.2)'
+                }),
+                stroke: new ol.style.Stroke({
+                    color: 'red',
+                    width: 2
+                })
+            })
+        );
+
+        var feature2 = format.readFeature(wkt2, {dataProjection: 'EPSG:3857', featureProjection: 'EPSG:3857'});
+
+        feature2.setStyle(
+            new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: 'rgba(255, 255, 255, 0.2)'
+                }),
+                stroke: new ol.style.Stroke({
+                    color: 'yellow',
+                    width: 2,
+                    lineDash: [4,5],
+                    lineDashOffset: 3
+                })
+            })
+        );
+
+        var vector = new ol.layer.Vector({source: new ol.source.Vector({features: [feature]})});
+        var vector2 = new ol.layer.Vector({source: new ol.source.Vector({features: [feature2]})});
+
+        var map = new ol.Map({
+        layers: [raster, vector, vector2],
+        target: 'map',
+        view: new ol.View({
+            center: [3644045.5445922264, 4846851.403839435],
+            zoom: 15.3
+        })
+        });
+
+
+        var layers = [
+            new ol.layer.Tile({
+                source: new ol.source.OSM()
+            }),
+            new ol.layer.Tile({
+                
+                source: new ol.source.TileWMS({
+                    url: 'http://193.140.229.127:8080/geoserver/bitirme_tucbs1/wms',
+                    params: { 'LAYERS': 'BeytepeNodesRev4' },
+                    serverType: 'geoserver',
+                    // Countries have transparency, so do not fade tiles:
+                    transition: 0
+                })
+            }),
+            new ol.layer.Tile({
+                
+                source: new ol.source.TileWMS({
+                    url: 'http://193.140.229.127:8080/geoserver/bitirme_tucbs1/wms',
+                    params: { 'LAYERS': 'beytepe_roads_rev2' },
+                    serverType: 'geoserver',
+                    // Countries have transparency, so do not fade tiles:
+                    transition: 0
+                })
+            }),    
+            
+            new ol.layer.Tile({
+                source: new OSM(),
+            }),
+
+        ];
+
+    </script>
+
+
+
+    <script>
+        function alertAlex() {
+            alert("Bu site Hacettepe Üniversitesi Geomatik Mühendisliği bölümünce Muammer Özkan, Ayça Tabakoğlu, Ekin Gönenç Uygun ve Dr. Öğr. Üyesi Berk Anbaroğlu tarafından hazırlanmıştır.");
+        }
+    </script>
+
+
+       <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+       <script type="text/javascript">
+           
+           (function() {
+               
+               var bodyEl = $('body'),
+                   navToggleBtn = bodyEl.find('.nav-toggle-btn');
+               
+               navToggleBtn.on('click', function(e) {
+                   bodyEl.toggleClass('active-nav');
+                   e.preventDefault();
+               });
+               
+               
+               
+           })();
+           
+           
+       </script>
+
+       
+</body>
+</html>

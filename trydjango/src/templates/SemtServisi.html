@@ -1,0 +1,62 @@
+<h1>Bu sayfa diğer projeye aittir</h1>
+
+<!-- index.js -->
+<script id="1">
+var express = require('express');
+var fs = require('fs');
+var DATABASE = require('database');
+var app = express();
+app.get('/', function (req, res, next) {
+process.env.NODE_TLS_REJECT_UNAUTHORIZED='0';
+res.writeHead(200, { 'Content-Type': 'text/html' });
+
+var myReadStream = fs.createReadStream(__dirname + '/index.html',
+'utf8')
+myReadStream.pipe(res);
+});
+app.use('/api/data', function (req, res) {
+DATABASE.getAllLocations(function (err, data) {
+
+if (err) {
+res.sendStatus(500);
+
+} else {
+res.send(data);
+}
+})
+});
+app.listen(process.env.PORT || 4000, function(){
+console.log("Express server listening on port %d in %s mode",
+this.address().port, app.settings.env);
+});
+</script>
+
+
+
+
+
+<!-- database.js -->
+<script id="database">
+const fs = require('fs');
+var promise = require('bluebird');
+var CONFIG = require('./appConfig');
+var pgp = require('pg-promise')(options);
+var DATABASE_PGB = pgp(CONFIG.database.postgres);
+
+module.exports = {
+       getAllLocations: getAllLocations,
+};
+
+var options = {
+    promiseLib: promise
+};
+
+
+function getAllLocations(cb) {
+      DATABASE_PGB.any("SELECT name, surname, start, finish, duration, ST_X(geometry) as longitude, ST_Y(geometry) as latitude, type FROM period where time > now() - interval '30 minutes'")
+      .then(function (data) {
+         cb(null, data);})
+       .catch(function (err) {
+          cb(err)});
+}
+</script>
