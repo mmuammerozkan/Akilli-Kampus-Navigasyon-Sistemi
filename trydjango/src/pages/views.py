@@ -54,11 +54,11 @@ def showResult(request):
     user_type = User_type
     
     try:
-        connection = psycopg2.connect(user="postgres",
-                                      password="159753",
-                                      host="127.0.0.1",
+        connection = psycopg2.connect(user="vcepjnmpthgfwv",
+                                      password="********",
+                                      host="ec2-54-78-211-131.eu-west-1.compute.amazonaws.com",
                                       port="5432",
-                                      database="GIS_Project")
+                                      database="d6ns6nk0bldh1e")
         cursor = connection.cursor()
         postgreSQL_select_Query = "select * from beytepe_roads_rev2;"
     
@@ -74,7 +74,7 @@ def showResult(request):
     
     ## Veritabanından pandas dataframe e geçiş
     sql_road = "select * from beytepe_roads_rev2;"
-    sql_node = "select * from beytepenodesrev4;"
+    sql_node = "select * from beytepenodesrev5;"
     sql_park = "select * from otopark;"
     
     roads = pd.read_sql_query(sql_road, connection)
@@ -122,6 +122,8 @@ def showResult(request):
 
         if(park.doluluk[i] == True):
             otoparkList.append(park.nodeid[i])
+
+
 
     # otoparkList = [1028, 1659, 1609, 959, 942, 1699, 1697, 1183, 262, 335, 29, 1469, 822, 711, 688, 627, 256, 53, 319, 1679, 1213]
     otoparkX = []
@@ -210,7 +212,6 @@ def showResult(request):
             # result1,result2 = (dijkstra (edges_distance , start_str, end_str))
             
             #otoparka giden kısım
-            print(str(otoparkList[otoparkIndex]))
             result1,result2 = (dijkstra (edges_distance , start_str, str(otoparkList[otoparkIndex])))
     
             f = (str(result2).replace('(','').replace(')',''))
@@ -245,7 +246,7 @@ def showResult(request):
                 lon.append(nodeslon)
                 
     
-            print(ints)
+
             road_IDS = []
             road_Multiline_List = []
             for i in range(len(ints)-1):
@@ -264,8 +265,7 @@ def showResult(request):
                         road_Multiline_List.append(roadLineString)
                         
                         flag = False
-            # print(road_IDS, "rota")
-            # print(road_Multiline_List[0])
+
             
             otoMultiLine = sheplygeometry.MultiLineString(road_Multiline_List)
             
@@ -323,7 +323,7 @@ def showResult(request):
                 lon.append(nodeslon)
                 
     
-            print(ints)
+
             road_IDS = []
             road_Multiline_List = []
             for i in range(len(ints)-1):
@@ -383,7 +383,7 @@ def showResult(request):
                 lon.append(nodeslon)
                 
     
-            print(ints)
+
             road_IDS = []
             road_Multiline_List = []
             for i in range(len(ints)-1):
@@ -402,8 +402,7 @@ def showResult(request):
                         road_Multiline_List.append(roadLineString)
                         
                         flag = False
-            # print(road_IDS, "rota")
-            # print(road_Multiline_List[0])
+
             
             nextMultiLine = sheplygeometry.MultiLineString(road_Multiline_List)
             
@@ -445,7 +444,7 @@ def showResult(request):
                 lon.append(nodeslon)
                 
     
-            print(ints)
+
             road_IDS = []
             road_Multiline_List = []
             for i in range(len(ints)-1):
@@ -464,8 +463,7 @@ def showResult(request):
                         road_Multiline_List.append(roadLineString)
                         
                         flag = False
-            # print(road_IDS, "rota")
-            # print(road_Multiline_List[0])
+
             
             nextMultiLine = sheplygeometry.MultiLineString(road_Multiline_List)
             
@@ -506,7 +504,7 @@ def showResult(request):
                 lon.append(nodeslon)
                 
     
-            print(ints)
+
             road_IDS = []
             road_Multiline_List = []
             for i in range(len(ints)-1):
@@ -525,8 +523,7 @@ def showResult(request):
                         road_Multiline_List.append(roadLineString)
                         
                         flag = False
-            # print(road_IDS, "rota")
-            # print(road_Multiline_List[0])
+
             
             nextMultiLine = sheplygeometry.MultiLineString(road_Multiline_List)
 
